@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Multi-Step EPC Data Form</title>
+<title>Updated Multi-Step EPC Data Form</title>
 <style>
   body { font-family: Arial, sans-serif; max-width: 700px; margin: 20px auto; }
   .step { display: none; }
@@ -18,7 +18,7 @@
 </head>
 <body>
 
-<h1>EPC Data Input Form</h1>
+<h1>Updated EPC Data Input Form</h1>
 
 <form id="epcForm">
 
@@ -63,6 +63,14 @@
   <div class="step" id="step-2">
     <fieldset>
       <legend>2. Dimensions</legend>
+
+      <label for="measurementTypeMain">Measurement Type - Main Property</label>
+      <select id="measurementTypeMain" name="measurementTypeMain" required>
+        <option value="">-- Select Measurement Type --</option>
+        <option value="Internal">Internal</option>
+        <option value="External">External</option>
+      </select>
+
       <h4>Main Property</h4>
       <label for="mainFloorArea">Floor Area (m²)</label>
       <input type="number" id="mainFloorArea" name="mainFloorArea" step="0.01" min="0" required />
@@ -75,6 +83,9 @@
 
       <label for="mainPartyWallLength">Party Wall Length (m)</label>
       <input type="number" id="mainPartyWallLength" name="mainPartyWallLength" step="0.01" min="0" required />
+
+      <!-- Repeat for extensions as needed (optional) -->
+
     </fieldset>
   </div>
 
@@ -154,8 +165,18 @@
         <option value="Solid Masonry">Solid Masonry</option>
         <option value="Other">Other</option>
       </select>
+
+      <!-- Thermal Bridges Treatment -->
+      <h4>Thermal Bridges</h4>
+      <label for="thermalBridgesTreatment">Thermal Bridges Treatment</label>
+      <select id="thermalBridgesTreatment" name="thermalBridgesTreatment" required>
+        <option value="">-- Select Treatment --</option>
+        <option value="Default SAP Assumptions">Default SAP Assumptions</option>
+        <option value="Custom Values Provided">Custom Values Provided</option>
+      </select>
     </fieldset>
   </div>
+
   <!-- Step 5: Roofs -->
   <div class="step" id="step-5">
     <fieldset>
@@ -175,7 +196,6 @@
       <input type="number" id="roofArea" name="roofArea" min="0" step="0.01" />
     </fieldset>
   </div>
-
   <!-- Step 6: Floors -->
   <div class="step" id="step-6">
     <fieldset>
@@ -248,8 +268,16 @@
         <option value="Intermittent Fan">Intermittent Fan</option>
       </select>
 
-      <label for="airPressureTest">Air Pressure Test Performed?</label>
-      <select id="airPressureTest" name="airPressureTest" required>
+      <div id="ventilationEfficiencyDetails" style="display:none; margin-top:10px; border:1px solid #ddd; padding:10px;">
+        <label for="ventilationHeatRecoveryEfficiency">Heat Recovery Efficiency (%)</label>
+        <input type="number" id="ventilationHeatRecoveryEfficiency" name="ventilationHeatRecoveryEfficiency" min="0" max="100" />
+
+        <label for="ventilationFanEfficiency">Fan Efficiency (%)</label>
+        <input type="number" id="ventilationFanEfficiency" name="ventilationFanEfficiency" min="0" max="100" />
+      </div>
+
+      <label for="airPressureTestDone">Air Pressure Test Performed?</label>
+      <select id="airPressureTestDone" name="airPressureTestDone" required>
         <option value="">-- Select Option --</option>
         <option value="Yes">Yes</option>
         <option value="No">No</option>
@@ -258,8 +286,17 @@
       <label for="totalBulbs">Total Number of Bulbs:</label>
       <input type="number" id="totalBulbs" name="totalBulbs" min="0" required />
 
-      <label for="lowEnergyBulbs">Number of Low Energy Bulbs:</label>
-      <input type="number" id="lowEnergyBulbs" name="lowEnergyBulbs" min="0" required />
+      <label for="bulbTypeCFL">Number of CFL Bulbs:</label>
+      <input type="number" id="bulbTypeCFL" name="bulbTypeCFL" min="0" />
+
+      <label for="bulbTypeLED">Number of LED Bulbs:</label>
+      <input type="number" id="bulbTypeLED" name="bulbTypeLED" min="0" />
+
+      <label for="bulbTypeHalogen">Number of Halogen Bulbs:</label>
+      <input type="number" id="bulbTypeHalogen" name="bulbTypeHalogen" min="0" />
+
+      <label for="bulbTypeIncandescent">Number of Incandescent Bulbs:</label>
+      <input type="number" id="bulbTypeIncandescent" name="bulbTypeIncandescent" min="0" />
     </fieldset>
   </div>
 
@@ -269,6 +306,9 @@
       <legend>9. Space Heating</legend>
       <label for="boilerPCDFRef">Main Heating Boiler PCDF Reference Number</label>
       <input type="text" id="boilerPCDFRef" name="boilerPCDFRef" required />
+
+      <label for="boilerEfficiency">Boiler Seasonal Efficiency (%)</label>
+      <input type="number" id="boilerEfficiency" name="boilerEfficiency" min="0" max="100" />
 
       <label for="fuelType">Fuel Type</label>
       <select id="fuelType" name="fuelType" required>
@@ -364,6 +404,12 @@
       <label for="pvArea">PV Area (m²) or % of Roof Area</label>
       <input type="number" id="pvArea" name="pvArea" min="0" step="0.01" />
 
+      <label for="pvOrientation">PV Orientation (degrees 0-360)</label>
+      <input type="number" id="pvOrientation" name="pvOrientation" min="0" max="360" />
+
+      <label for="pvShadingFactor">PV Shading Factor (0-1)</label>
+      <input type="number" id="pvShadingFactor" name="pvShadingFactor" min="0" max="1" step="0.01" />
+
       <label for="windTurbinePresent">Wind Turbine Present?</label>
       <select id="windTurbinePresent" name="windTurbinePresent" required>
         <option value="">-- Select Option --</option>
@@ -429,8 +475,19 @@
   const steps = document.querySelectorAll('.step');
   let currentStep = 0;
 
+  // Show/hide conservatory details
   document.getElementById('hasConservatory').addEventListener('change', function() {
     document.getElementById('conservatoryDetails').style.display = this.checked ? 'block' : 'none';
+  });
+
+  // Show/hide ventilation efficiency inputs
+  document.getElementById('mechanicalVentilation').addEventListener('change', function() {
+    const ventDetails = document.getElementById('ventilationEfficiencyDetails');
+    if (this.value === 'MVHR' || this.value === 'MEV') {
+      ventDetails.style.display = 'block';
+    } else {
+      ventDetails.style.display = 'none';
+    }
   });
 
   function showStep(n) {
@@ -465,24 +522,53 @@
     showStep(currentStep);
   }
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    // Placeholder for API submission logic
-    alert('Form submitted! Implement your backend integration logic here.');
 
-    // Example: simulate API response with dummy data for Results tab
-    const resultsDiv = document.getElementById('resultsSummary');
-    resultsDiv.innerHTML = `
-      <h3>Calculated EPC Results</h3>
-      <p><strong>SAP Score:</strong> 72</p>
-      <p><strong>EPC Band:</strong> C</p>
-      <p><strong>Energy Use:</strong> 170 kWh/m²/year</p>
-      <p><strong>CO₂ Emissions:</strong> 12.5 kg/m²/year</p>
-      <p><strong>Recommendations:</strong> Insulate loft, upgrade boiler.</p>
-    `;
-    // Show results tab
-    currentStep = steps.length - 1;
-    showStep(currentStep);
+    // Gather form data into JSON
+    const formData = {};
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+      if (input.type === 'checkbox') {
+        formData[input.name] = input.checked;
+      } else {
+        formData[input.name] = input.value;
+      }
+    });
+
+    // Example: Replace with your backend API URL
+    const apiUrl = 'http://localhost:3000/calculate-epc';
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) throw new Error('Network response was not ok');
+
+      const result = await response.json();
+
+      // Show results in resultsSummary div
+      const resultsDiv = document.getElementById('resultsSummary');
+      resultsDiv.innerHTML = `
+        <h3>Calculated EPC Results</h3>
+        <p><strong>SAP Score:</strong> ${result.sapScore}</p>
+        <p><strong>EPC Band:</strong> ${result.epcBand}</p>
+        <p><strong>Energy Use:</strong> ${result.energyUse} kWh/m²/year</p>
+        <p><strong>CO₂ Emissions:</strong> ${result.co2Emissions} kg/m²/year</p>
+        <p><strong>Recommendations:</strong></p>
+        <ul>${result.recommendations.map(r => `<li>${r}</li>`).join('')}</ul>
+      `;
+
+      // Move to results tab
+      currentStep = steps.length - 1;
+      showStep(currentStep);
+
+    } catch (error) {
+      alert('Error submitting form: ' + error.message);
+    }
   });
 
   showStep(currentStep);
