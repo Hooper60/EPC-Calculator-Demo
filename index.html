@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Multi-Step EPC Data Form</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 700px; margin: 20px auto; }
+  .step { display: none; }
+  .step.active { display: block; }
+  button { margin-top: 10px; }
+  fieldset { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; }
+  legend { font-weight: bold; }
+  label { display: block; margin-top: 10px; }
+  input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 6px; margin-top: 4px; }
+  textarea { resize: vertical; }
+</style>
+</head>
+<body>
+
+<h1>EPC Data Input Form</h1>
+
+<form id="epcForm">
+
+  <!-- Step 1: Property Description -->
+  <div class="step active" id="step-1">
+    <fieldset>
+      <legend>1. Property Description</legend>
+      <label for="propertyType">Property Type</label>
+      <select id="propertyType" name="propertyType" required>
+        <option value="">-- Select Property Type --</option>
+        <option value="House">House</option>
+        <option value="Bungalow">Bungalow</option>
+        <option value="Flat">Flat</option>
+        <option value="Maisonette">Maisonette</option>
+        <option value="Park Home">Park Home</option>
+      </select>
+
+      <label for="numberStoreys">Number of Storeys</label>
+      <input type="number" id="numberStoreys" name="numberStoreys" min="1" required />
+
+      <label for="habitableRooms">Habitable Rooms</label>
+      <input type="number" id="habitableRooms" name="habitableRooms" min="1" required />
+
+      <label for="heatedHabitableRooms">Heated Habitable Rooms</label>
+      <input type="number" id="heatedHabitableRooms" name="heatedHabitableRooms" min="0" required />
+
+      <label for="dateBuiltMain">Date Built - Main Property</label>
+      <select id="dateBuiltMain" name="dateBuiltMain" required>
+        <option value="">-- Select Year Built Range --</option>
+        <option value="pre-1900">Pre 1900</option>
+        <option value="1900-1929">1900 - 1929</option>
+        <option value="1930-1949">1930 - 1949</option>
+        <option value="1950-1966">1950 - 1966</option>
+        <option value="1967-1975">1967 - 1975</option>
+        <option value="1976-1990">1976 - 1990</option>
+        <option value="post-1990">Post 1990</option>
+      </select>
+    </fieldset>
+  </div>
+
+  <!-- Step 2: Dimensions -->
+  <div class="step" id="step-2">
+    <fieldset>
+      <legend>2. Dimensions</legend>
+      <h4>Main Property</h4>
+      <label for="mainFloorArea">Floor Area (m²)</label>
+      <input type="number" id="mainFloorArea" name="mainFloorArea" step="0.01" min="0" required />
+
+      <label for="mainRoomHeight">Room Height (m)</label>
+      <input type="number" id="mainRoomHeight" name="mainRoomHeight" step="0.01" min="0" required />
+
+      <label for="mainHeatLossWallPerimeter">Heat Loss Wall Perimeter (m)</label>
+      <input type="number" id="mainHeatLossWallPerimeter" name="mainHeatLossWallPerimeter" step="0.01" min="0" required />
+
+      <label for="mainPartyWallLength">Party Wall Length (m)</label>
+      <input type="number" id="mainPartyWallLength" name="mainPartyWallLength" step="0.01" min="0" required />
+    </fieldset>
+  </div>
+
+  <!-- Step 3: Conservatory -->
+  <div class="step" id="step-3">
+    <fieldset>
+      <legend>3. Conservatory</legend>
+      <label>
+        <input type="checkbox" id="hasConservatory" name="hasConservatory" />
+        Is there a conservatory?
+      </label>
+      <div id="conservatoryDetails" style="display:none; margin-top: 15px; border: 1px solid #ddd; padding: 10px;">
+        <label>
+          <input type="checkbox" id="conservatoryThermallySeparated" name="conservatoryThermallySeparated" />
+          Is it thermally separated?
+        </label>
+
+        <label for="conservatoryFloorArea">Floor Area (m²)</label>
+        <input type="number" id="conservatoryFloorArea" name="conservatoryFloorArea" step="0.01" min="0" />
+
+        <label>
+          <input type="checkbox" id="conservatoryDoubleGlazed" name="conservatoryDoubleGlazed" />
+          Double Glazed
+        </label>
+
+        <label for="conservatoryGlazedPerimeter">Glazed Perimeter (m)</label>
+        <input type="number" id="conservatoryGlazedPerimeter" name="conservatoryGlazedPerimeter" step="0.01" min="0" />
+
+        <label for="conservatoryRoomHeight">Room Height</label>
+        <select id="conservatoryRoomHeight" name="conservatoryRoomHeight">
+          <option value="1 Storey">1 Storey</option>
+          <option value="2 Storey">2 Storey</option>
+          <option value="3 Storey">3 Storey</option>
+        </select>
+      </div>
+    </fieldset>
+  </div>
+
+  <!-- Step 4: Walls -->
+  <div class="step" id="step-4">
+    <fieldset>
+      <legend>4. Walls</legend>
+      <h4>Main Wall</h4>
+      <label for="mainWallType">Type (As per SAP requirements):</label>
+      <select id="mainWallType" name="mainWallType" required>
+        <option value="">-- Select Type --</option>
+        <option value="CA Cavity">CA Cavity</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label for="mainWallInsulation">Insulation (As per SAP requirements):</label>
+      <select id="mainWallInsulation" name="mainWallInsulation" required>
+        <option value="">-- Select Insulation --</option>
+        <option value="Filled Cavity">Filled Cavity</option>
+        <option value="None">None</option>
+      </select>
+
+      <label for="mainWallThickness">Wall Thickness (mm):</label>
+      <input type="number" id="mainWallThickness" name="mainWallThickness" min="0" step="1" placeholder="e.g. 250" required />
+
+      <label>
+        <input type="checkbox" id="wallThicknessUnknown" name="wallThicknessUnknown" />
+        Wall Thickness Unknown
+      </label>
+
+      <h4>Alternative Walls</h4>
+      <label for="altWall1Area">Alternative Wall 1 Area (m²):</label>
+      <input type="number" id="altWall1Area" name="altWall1Area" min="0" step="0.01" placeholder="e.g. 10.5" />
+
+      <label for="altWall2Area">Alternative Wall 2 Area (m²):</label>
+      <input type="number" id="altWall2Area" name="altWall2Area" min="0" step="0.01" placeholder="e.g. 5.25" />
+
+      <h4>Party Wall</h4>
+      <label for="partyWallType">Type (As per SAP requirements):</label>
+      <select id="partyWallType" name="partyWallType" required>
+        <option value="">-- Select Type --</option>
+        <option value="Solid Masonry">Solid Masonry</option>
+        <option value="Other">Other</option>
+      </select>
+    </fieldset>
+  </div>
+  <!-- Step 5: Roofs -->
+  <div class="step" id="step-5">
+    <fieldset>
+      <legend>5. Roofs</legend>
+      <label for="roofType">Roof Type (As per SAP requirements):</label>
+      <select id="roofType" name="roofType" required>
+        <option value="">-- Select Roof Type --</option>
+        <option value="Pitched">Pitched</option>
+        <option value="Flat">Flat</option>
+        <option value="Room in Roof">Room in Roof</option>
+      </select>
+
+      <label for="roofInsulationThickness">Insulation Thickness (mm):</label>
+      <input type="number" id="roofInsulationThickness" name="roofInsulationThickness" min="0" step="1" placeholder="e.g. 250" required />
+
+      <label for="roofArea">Roof Area (m²) (optional):</label>
+      <input type="number" id="roofArea" name="roofArea" min="0" step="0.01" />
+    </fieldset>
+  </div>
+
+  <!-- Step 6: Floors -->
+  <div class="step" id="step-6">
+    <fieldset>
+      <legend>6. Floors</legend>
+      <label for="floorType">Floor Type (As per SAP requirements):</label>
+      <select id="floorType" name="floorType" required>
+        <option value="">-- Select Floor Type --</option>
+        <option value="Solid">Solid</option>
+        <option value="Suspended Timber">Suspended Timber</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label for="floorInsulated">Has the Floor Been Insulated or Upgraded?</label>
+      <select id="floorInsulated" name="floorInsulated" required>
+        <option value="">-- Select Option --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+        <option value="Unknown">Unknown</option>
+      </select>
+    </fieldset>
+  </div>
+
+  <!-- Step 7: Openings -->
+  <div class="step" id="step-7">
+    <fieldset>
+      <legend>7. Openings</legend>
+      <label for="numberOfDoors">Number of External Doors:</label>
+      <input type="number" id="numberOfDoors" name="numberOfDoors" min="0" required />
+
+      <label for="doorsInsulated">Are Doors Insulated?</label>
+      <select id="doorsInsulated" name="doorsInsulated" required>
+        <option value="">-- Select Option --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+
+      <label for="doorsDraughtProofed">Are Doors Draught Proofed?</label>
+      <select id="doorsDraughtProofed" name="doorsDraughtProofed" required>
+        <option value="">-- Select Option --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+
+      <label for="numberOfWindows">Number of Windows:</label>
+      <input type="number" id="numberOfWindows" name="numberOfWindows" min="0" required />
+
+      <label for="windowGlazingType">Window Glazing Type:</label>
+      <select id="windowGlazingType" name="windowGlazingType" required>
+        <option value="">-- Select Glazing --</option>
+        <option value="Single">Single</option>
+        <option value="Double">Double</option>
+        <option value="Triple">Triple</option>
+      </select>
+    </fieldset>
+  </div>
+
+  <!-- Step 8: Ventilation & Lighting -->
+  <div class="step" id="step-8">
+    <fieldset>
+      <legend>8. Ventilation & Lighting</legend>
+      <label for="openChimneys">Number of Open Chimneys:</label>
+      <input type="number" id="openChimneys" name="openChimneys" min="0" required />
+
+      <label for="mechanicalVentilation">Mechanical Ventilation Present?</label>
+      <select id="mechanicalVentilation" name="mechanicalVentilation" required>
+        <option value="">-- Select Option --</option>
+        <option value="No">No</option>
+        <option value="MVHR">MVHR</option>
+        <option value="MEV">MEV</option>
+        <option value="Intermittent Fan">Intermittent Fan</option>
+      </select>
+
+      <label for="airPressureTest">Air Pressure Test Performed?</label>
+      <select id="airPressureTest" name="airPressureTest" required>
+        <option value="">-- Select Option --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+
+      <label for="totalBulbs">Total Number of Bulbs:</label>
+      <input type="number" id="totalBulbs" name="totalBulbs" min="0" required />
+
+      <label for="lowEnergyBulbs">Number of Low Energy Bulbs:</label>
+      <input type="number" id="lowEnergyBulbs" name="lowEnergyBulbs" min="0" required />
+    </fieldset>
+  </div>
+
+  <!-- Step 9: Space Heating -->
+  <div class="step" id="step-9">
+    <fieldset>
+      <legend>9. Space Heating</legend>
+      <label for="boilerPCDFRef">Main Heating Boiler PCDF Reference Number</label>
+      <input type="text" id="boilerPCDFRef" name="boilerPCDFRef" required />
+
+      <label for="fuelType">Fuel Type</label>
+      <select id="fuelType" name="fuelType" required>
+        <option value="">-- Select Fuel Type --</option>
+        <option value="Mains Gas">Mains Gas</option>
+        <option value="LPG">LPG</option>
+        <option value="Oil">Oil</option>
+        <option value="Electric">Electric</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label for="heatEmitterType">Heat Emitter Type</label>
+      <select id="heatEmitterType" name="heatEmitterType" required>
+        <option value="">-- Select Heat Emitter --</option>
+        <option value="Radiators">Radiators</option>
+        <option value="Underfloor Heating">Underfloor Heating</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label for="flueType">Flue Type</label>
+      <select id="flueType" name="flueType" required>
+        <option value="">-- Select Flue Type --</option>
+        <option value="Open">Open</option>
+        <option value="Balanced">Balanced</option>
+        <option value="Fan Assisted">Fan Assisted</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label for="heatingControls">Heating Controls (SAP Code)</label>
+      <input type="text" id="heatingControls" name="heatingControls" required />
+
+      <label for="heatPercentage">Percentage of Heat Provided by This System</label>
+      <input type="number" id="heatPercentage" name="heatPercentage" min="0" max="100" required />
+    </fieldset>
+  </div>
+
+  <!-- Step 10: Water Heating -->
+  <div class="step" id="step-10">
+    <fieldset>
+      <legend>10. Water Heating</legend>
+      <label for="waterHeatingType">Water Heating Type</label>
+      <select id="waterHeatingType" name="waterHeatingType" required>
+        <option value="">-- Select Water Heating Type --</option>
+        <option value="Direct">Direct</option>
+        <option value="Indirect">Indirect</option>
+        <option value="Combi Boiler">Combi Boiler</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label for="hotWaterCylinderPresent">Hot Water Cylinder Present?</label>
+      <select id="hotWaterCylinderPresent" name="hotWaterCylinderPresent" required>
+        <option value="">-- Select Option --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+
+      <label for="cylinderInsulationThickness">Cylinder Insulation Thickness (mm)</label>
+      <input type="number" id="cylinderInsulationThickness" name="cylinderInsulationThickness" min="0" />
+
+      <label for="cylinderType">Cylinder Type</label>
+      <input type="text" id="cylinderType" name="cylinderType" />
+
+      <label for="wwhrsPresent">Waste Water Heat Recovery System (WWHRS) Present?</label>
+      <select id="wwhrsPresent" name="wwhrsPresent" required>
+        <option value="">-- Select Option --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+
+      <label for="secondaryHeatingPresent">Secondary Heating Present?</label>
+      <select id="secondaryHeatingPresent" name="secondaryHeatingPresent" required>
+        <option value="">-- Select Option --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+
+      <label for="secondaryHeatingCode">Secondary Heating SAP Code (if known)</label>
+      <input type="text" id="secondaryHeatingCode" name="secondaryHeatingCode" />
+    </fieldset>
+  </div>
+
+  <!-- Step 11: Renewables & Other Technologies -->
+  <div class="step" id="step-11">
+    <fieldset>
+      <legend>11. Renewables & Other Technologies</legend>
+      <label for="pvSystemPresent">Photovoltaic (PV) System Present?</label>
+      <select id="pvSystemPresent" name="pvSystemPresent" required>
+        <option value="">-- Select Option --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+
+      <label for="pvArea">PV Area (m²) or % of Roof Area</label>
+      <input type="number" id="pvArea" name="pvArea" min="0" step="0.01" />
+
+      <label for="windTurbinePresent">Wind Turbine Present?</label>
+      <select id="windTurbinePresent" name="windTurbinePresent" required>
+        <option value="">-- Select Option --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+
+      <label for="specialTechnologies">Other Special Technologies</label>
+      <input type="text" id="specialTechnologies" name="specialTechnologies" placeholder="e.g. Solar Thermal, Heat Pumps" />
+    </fieldset>
+  </div>
+
+  <!-- Step 12: Recommendations -->
+  <div class="step" id="step-12">
+    <fieldset>
+      <legend>12. Recommendations (Optional)</legend>
+      <label for="recommendations">Any specific recommendations or notes?</label>
+      <textarea id="recommendations" name="recommendations" rows="4"></textarea>
+    </fieldset>
+  </div>
+
+  <!-- Step 13: Addenda -->
+  <div class="step" id="step-13">
+    <fieldset>
+      <legend>13. Addenda (Optional)</legend>
+      <label for="addendaNotes">Additional Notes or Addenda</label>
+      <textarea id="addendaNotes" name="addendaNotes" rows="4"></textarea>
+    </fieldset>
+  </div>
+
+  <!-- Step 14: Technical Advice -->
+  <div class="step" id="step-14">
+    <fieldset>
+      <legend>14. Technical Advice (Optional)</legend>
+      <label for="technicalAdvice">Technical Advice or Comments</label>
+      <textarea id="technicalAdvice" name="technicalAdvice" rows="4"></textarea>
+    </fieldset>
+  </div>
+
+  <!-- Step 15: Results & EPC Summary -->
+  <div class="step" id="step-15">
+    <fieldset>
+      <legend>15. Results & EPC Summary</legend>
+      <p><strong>Note:</strong> This section will display the calculated SAP score, EPC band, energy usage, CO₂ emissions, and recommendations based on the submitted data.</p>
+
+      <div id="resultsSummary" style="border:1px solid #ccc; padding:10px; background:#f9f9f9;">
+        <p><em>Please submit the form to generate results.</em></p>
+      </div>
+    </fieldset>
+  </div>
+
+  <!-- Navigation buttons -->
+  <div style="text-align: right;">
+    <button type="button" id="prevBtn" onclick="nextPrev(-1)" disabled>Previous</button>
+    <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+    <button type="submit" id="submitBtn" style="display:none;">Submit</button>
+  </div>
+
+</form>
+
+<script>
+  const form = document.getElementById('epcForm');
+  const steps = document.querySelectorAll('.step');
+  let currentStep = 0;
+
+  document.getElementById('hasConservatory').addEventListener('change', function() {
+    document.getElementById('conservatoryDetails').style.display = this.checked ? 'block' : 'none';
+  });
+
+  function showStep(n) {
+    steps.forEach((step, index) => {
+      step.classList.toggle('active', index === n);
+    });
+    document.getElementById('prevBtn').disabled = n === 0;
+    document.getElementById('nextBtn').style.display = n === (steps.length - 1) ? 'none' : 'inline';
+    document.getElementById('submitBtn').style.display = n === (steps.length - 1) ? 'inline' : 'none';
+  }
+
+  function validateStep() {
+    const inputs = steps[currentStep].querySelectorAll('input, select, textarea');
+    for (const input of inputs) {
+      if (input.hasAttribute('required') && !input.value) {
+        alert('Please fill out the required field: ' + (input.previousElementSibling?.textContent || input.name));
+        input.focus();
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function nextPrev(n) {
+    if (n === 1 && !validateStep()) return;
+
+    currentStep += n;
+    if (currentStep >= steps.length) {
+      form.submit();
+      return;
+    }
+    showStep(currentStep);
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    // Placeholder for API submission logic
+    alert('Form submitted! Implement your backend integration logic here.');
+
+    // Example: simulate API response with dummy data for Results tab
+    const resultsDiv = document.getElementById('resultsSummary');
+    resultsDiv.innerHTML = `
+      <h3>Calculated EPC Results</h3>
+      <p><strong>SAP Score:</strong> 72</p>
+      <p><strong>EPC Band:</strong> C</p>
+      <p><strong>Energy Use:</strong> 170 kWh/m²/year</p>
+      <p><strong>CO₂ Emissions:</strong> 12.5 kg/m²/year</p>
+      <p><strong>Recommendations:</strong> Insulate loft, upgrade boiler.</p>
+    `;
+    // Show results tab
+    currentStep = steps.length - 1;
+    showStep(currentStep);
+  });
+
+  showStep(currentStep);
+</script>
+
+</body>
+</html>
